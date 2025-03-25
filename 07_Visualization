@@ -1,0 +1,40 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from collections import Counter
+
+# set this so the graphs open internally
+%matplotlib inline
+
+# Step 2: Import the dataset
+url = "https://raw.githubusercontent.com/thieu1995/csv-files/main/data/pandas/chipotle.tsv"
+chipo = pd.read_csv(url, sep='\t')
+
+# Step 3: Assign it to a variable called chipo
+
+# Step 4: See the first 10 entries
+chipo.head(10)
+
+# Step 5: Create a histogram of the top 5 items bought
+top_items = chipo['item_name'].value_counts().head(5)
+top_items.plot(kind='bar', title='Top 5 Items Bought')
+plt.xlabel('Item Name')
+plt.ylabel('Count')
+plt.show()
+
+# Step 6: Create a scatterplot with the number of items ordered per order price
+# Hint: Price should be in the X-axis and Items ordered in the Y-axis
+chipo['item_price'] = chipo['item_price'].apply(lambda x: float(x[1:]))
+order_summary = chipo.groupby('order_id').agg({'item_price': 'sum', 'quantity': 'sum'})
+plt.scatter(order_summary['item_price'], order_summary['quantity'], alpha=0.5)
+plt.xlabel('Order Price')
+plt.ylabel('Items Ordered')
+plt.title('Items Ordered vs Order Price')
+plt.show()
+
+# Step 7: BONUS: Create a question and a graph to answer your own question.
+# Question: What are the top 5 most expensive items on average?
+avg_price_per_item = chipo.groupby('item_name')['item_price'].mean().sort_values(ascending=False).head(5)
+avg_price_per_item.plot(kind='bar', title='Top 5 Most Expensive Items on Average')
+plt.xlabel('Item Name')
+plt.ylabel('Average Price')
+plt.show()
